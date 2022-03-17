@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador Financeiro GrãoTech</title>
+    <style>
+        *{
+            font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+        }
+        
+        h1{
+            margin-left: 25%;
+            font-size: 25px;
+        }
+        h3{
+            font-size: 20px;
+        }
+        h4{
+            margin-left: 3%;
+            font-size: 20px;
+        }
+        #principal{
+        
+            float: left;
+        }
+        #tela{
+            background: #ced89d;
+            width: 600px;
+        }
+        #margin{
+            padding: 2%;
+        }
+        #margin > h3{
+            margin-left: 2%;
+            color: #1b7100;
+        }
+        
+           
+        
+        #btm_calcular{
+            margin-left: 45%;
+            background: #9abc8a;
+            padding: 2%;
+            
+        }
+        #btm_calcular:hover{
+            background-color: rgba(27, 113, 0,0.9);
+        }
+        #resultado{
+            background: white;
+        }
+        #container_sem_arduino{
+            background:rgba(110, 185, 36,0.8);
+            padding: 2%;
+        }
+
+        #container_com_arduino{
+            background:#ced89d;
+            padding: 2%;
+            color: #1b7100;
+        }
+        input{
+            width: 150px;
+        }
+        .titulo{
+            background: #1b7100;
+            padding: 1%;
+        }
+        
+        .branco{
+            background: white;
+            width: 1px;
+            height: 10px;
+        }
+
+        
+    </style>
+</head>
+<body>
+
+    <div id="principal">
+        
+
+       
+        <div id="tela">
+            <div class="titulo"> 
+
+                <h1>Simulador Financeiro</h1>
+            </div>
+            
+            <div id="margin">
+                
+                <h3>Simule a quantidade de perdas que você teria sem utilizar o nosso sistema.</h3><br>
+                
+                <div id="esquerda">
+                    Valor total investido: <input id="vInvestido"><br>
+
+                </div>
+                 <br>
+                <div id="direita">
+                    Quantidade de Kg Armazenada: <input id="qArmazenada"><br>
+                </div>
+              
+               
+                <br>
+                <button id="btm_calcular" onclick="fun_calcular()"> Calcular</button>
+
+            </div>
+            <div id="resultado">
+
+            </div>     
+        </div> 
+         
+    </div>
+    
+</body>
+</html>
+<script>
+    function fun_calcular(){
+        //quantidade de grãos armazenados
+        var nQuantidade = Number(qArmazenada.value);
+        var vInvestimento = Number(vInvestido.value);
+
+        //porcentagens e prejuizos sem o equipamento em 20%
+        //60 = kilos
+        //201.77 valor da saca de soja
+        var porcent_perdas = (nQuantidade *20) / 100;
+        var prejuizo = (porcent_perdas/ 60) * 201.77;
+        
+        //quantidade de sacas
+        var sacas = nQuantidade/60;
+
+        //lucro das total sem investimento ou perdas
+        lucro_sacas = sacas * 201.77;
+
+        // Porcentagem da perda com o nosso sistema arduino 5%
+        var perdas_com_arduino = (lucro_sacas * 5) / 100;
+
+        // lucro Bruto - investimento
+        var lucro_liquido = lucro_sacas - vInvestimento;
+
+        // Calculo de lucro e prejuizo
+        var sc_prejuizo = lucro_sacas - prejuizo;
+
+        // Calculo final com perdas e investimento
+        var calcular = lucro_sacas - prejuizo - vInvestimento;
+
+        // Calculo de lucro Bruto Arduino - prejuizo arduino
+        var sc_prejuizo_arduino = lucro_sacas - perdas_com_arduino;
+
+        // Calculo de lucro Líquido Arduino - prejuizo arduino
+        var sc_prejuizo_arduino_liquido =
+        lucro_sacas - vInvestimento - perdas_com_arduino;
+
+        var reducao = sc_prejuizo_arduino_liquido - calcular;
+        
+        resultado.innerHTML = 
+        ` <div class="branco"> </div>
+        <div class="titulo">
+            <h2>Sem usar nosso sistema GrãoTech:</h2>
+            </div>
+        <div id="container_sem_arduino">
+        
+            <div>
+                <h3>Estimativa de lucro bruto s/perdas: ${lucro_sacas} </h3>
+            </div>
+            <div>
+                <h3>Lucro líquido s/perdas: ${lucro_liquido} </h3>
+            </div>
+            <div>
+                <h3>Lucro Bruto: ${sc_prejuizo} </h3>
+            </div>
+            <div>
+                <h3>Lucro Líquido: ${calcular} </h3>
+            </div>
+        </div>
+        <div class="branco"> </div>
+        <div class="titulo">
+            <h2>Usando o nosso sistema GrãoTech:</h2></div>
+        <div id="container_com_arduino">
+            
+            <div>
+                <h3>Lucro Bruto: ${sc_prejuizo_arduino} </h3>
+            </div>
+            <div>
+                <h3>Lucro Líquido: ${sc_prejuizo_arduino_liquido} </h3>
+            </div>
+            <hr>
+            <div>
+                <h3>Redução de Prejuizo: ${reducao} </h3>
+            </div>
+
+        </div>
+
+    `;
+
+    }
+</script>
